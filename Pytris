@@ -1,3 +1,4 @@
+APP
 #!/usr/bin/python3
 
 from tkinter import Canvas, Label, Tk, StringVar, Button, LEFT
