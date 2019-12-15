@@ -1,0 +1,9 @@
+EXTENSION
+'''print'''
+import sys
+
+wtprint = ''
+for x in sys.argv:
+    if x != sys.argv[0]:
+        wtprint = wtprint + " " + x
+print(wtprint[1:])
