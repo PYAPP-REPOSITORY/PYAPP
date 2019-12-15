@@ -1,0 +1,132 @@
+'''
+FDEE, Fang OS Development emulator environment
+'''
+import os
+import getpass
+import time
+os.system("clear")
+
+user = getpass.getuser()
+extensions = []
+extension_n = []
+for x in os.listdir("/Users/" + user + "/Fang_Extensions"):
+    if x[len(x)-4:] == "fext":
+        extensions.append("/Users/" + user + "/Fang_Extensions/" + x)
+        extension_n.append(x)
+
+
+print()
+print()
+print("FDEE")
+print("-------------------")
+
+time.sleep(1)
+
+
+def prompt(text="Enter your command: ", line=True, prompt_text="> "):
+    if line == True:
+        print("-------------------")
+    print(text)
+    take_in = input(prompt_text)
+    return take_in
+
+def standard_inputs(take_in):
+    commands = take_in.strip().split()
+
+    
+    if len(commands) == 0:
+        print()
+        print("No input detected")
+        return None
+
+    
+
+    if commands[0] == 'help': #help
+        print("Development build")
+
+
+
+
+    if commands[0] == 'quit': #Quit
+        return commands[0]
+
+
+
+    if commands[0] == 'load': #Load Program
+        files = []
+        print()
+        if len(commands) == 1:            
+            print("Scanning for available apps...")
+            print()
+            time.sleep(0.5)
+            for file in os.listdir("/Users/" + user + "/Fang_Apps"):
+                if file[len(file)-2:] == "py":
+                    files.append(file)
+
+            if len(files) == 1:
+                print("No Files Available")
+                return commands[0]
+
+            
+            
+            for x in files:
+                print(x[:len(x)-3])
+            print()
+            file_name = prompt("Input the name of the file from the list above", False)
+            if len(file_name) == 0:
+                print("Error while opening program. ")
+                return commands[0]
+            print()
+            print("Loading " + file_name + "...")
+            print()
+            time.sleep(0.5)
+            for x in files:
+                if file_name + ".py" == x:
+                   try:
+                       os.system("python3 " + "/Users/" + user + "/Fang_Apps/" + file_name + ".py")
+                   except Exception:
+                       print("Error while opening program.")
+        elif len(commands) == 2:
+            print()
+            print("Loading " + commands[1] + "...")
+            print()
+            try: 
+                os.system("python3 " + "/Users/" + user + "/Fang_Apps/" + commands[1] + ".py")
+            except Exception:
+                print("Error while opening program.")
+            
+        else:
+            print("Extra argument detected")
+        return commands[0]
+
+
+    
+    if commands[0] != "load" and commands[0] != "quit" and commands[0] != "help":
+         for x in extensions:
+             opened = open(x, 'r')
+             opened_l = str(opened.read()).strip().split()
+             opened.close()
+             if opened_l[0] == "'''" + commands[0] + "'''":
+                 passto = ''
+                 for y in range(len(commands) - 1):
+                     passto = passto + " " + commands[y + 1]
+                     
+                 os.system("python3 " + x + " " + passto)
+                 return commands[0]
+    
+             print("Command not found")
+             return commands[0]
+                 
+             
+
+while 1:
+    command_get = standard_inputs(prompt(" ", line=False, prompt_text="FDEE|: "))
+    if command_get == 'quit':
+        break
+    
+quit()
+
+
+
+    
+
