@@ -7,3 +7,4 @@ for x in sys.argv:
     if x != sys.argv[0]:
         wtprint = wtprint + " " + x
 print(wtprint[1:])
+#PYAPP_APP
