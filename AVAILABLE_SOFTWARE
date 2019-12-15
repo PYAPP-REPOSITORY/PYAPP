@@ -1,5 +1,16 @@
 0.0.1
 Pytris (.py) - A python recreation of the popular tetris - Unknown Creator
+
 FDEE (.py) - loadable FDEE environment - Cryptonic Designs
+
 FangUpdater (.fext) - an updater extension for FangOS - Cryptonic Designs
+
+PrintFunction (.fext) - an extension that will repeat all text after it, 
+  meant mainly for Fenris Use - Cryptonic Designs
+  
+ShowContents (.fext) - an extension for viewing the contents of Folders
+  - Cryptonic Designs
+  
+Notes (.fext) - an extension for taking and reading notes - Cryptonic Designs
+
 AAH (.fen) - Opens 50 terminal windows of FangOS - Cryptonic Designs
