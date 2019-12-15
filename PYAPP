@@ -1,0 +1,341 @@
+EXTENSION
+
+'''pyapp'''
+#Deletable Shortcuts
+import sys
+import os
+import getpass
+import time
+if len(sys.argv) == 1:
+	
+	try:
+		import requests
+	except Exception:
+		print("There was an error while trying to use online tools, \nplease make sure they are installed")
+		time.sleep(3)
+		quit()
+	
+	VERSION = "0.0.2"
+
+	available_o = requests.get("http://raw.githubusercontent.com/PYAPP-REPOSITORY/PYAPP/master/AVAILABLE_SOFTWARE")
+	available = available_o.text
+	available = available.strip().split("\n")
+	if VERSION != available[0]:
+		print("Looks like the version you are using is out of date, \nto continue, please update PYAPP")
+		time.sleep(3)
+		quit()
+	os.system("clear")
+	print("Welcome to PYAPP for FangOS!")
+	time.sleep(1)
+	print()
+	print("Here's what's available:")
+	print("-" * 20)
+	for x in available[1:]:
+		print(x)
+	print()
+	wanted_app = input("What would you like? \n> ").strip()
+	available_o = requests.get("http://raw.githubusercontent.com/PYAPP-REPOSITORY/PYAPP/master/RAW_AVAILABLE_SOFTWARE")
+	available = available_o.text
+	available = available.strip().split("\n")
+	wanted_app_available = False
+	for x in available:
+		if wanted_app == x:
+			wanted_app_available = True
+	if not(wanted_app_available):
+		print("There are no available apps under that name.")
+		time.sleep(1)
+		quit()
+	try:
+		print("Gathering {}...".format(wanted_app))
+		software_contents_o = requests.get("http://raw.githubusercontent.com/PYAPP-REPOSITORY/PYAPP/master/{}".format(wanted_app))
+		software_contents = software_contents_o.text
+		time.sleep(0.3)
+		print("Preparing location...")
+		time.sleep(0.3)
+		if software_contents.strip().split()[0] == "APP":
+			for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Apps"):
+				if x == wanted_app + ".py":
+					print("Removing Old Version...")
+					os.remove("/Users/" + getpass.getuser() + "/Fang_Apps/" + x)
+
+		if software_contents.strip().split()[0] == "AUTOMATION":
+			for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Automations"):
+				if x == wanted_app + ".fen":
+					print("Removing Old Version...")
+					os.remove("/Users/" + getpass.getuser() + "/Fang_Automations/" + x)
+
+		if software_contents.strip().split()[0] == "EXTENSION":
+			for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Extensions"):
+				if x == wanted_app + ".fext":
+					print("Removing Old Version...")
+					os.remove("/Users/" + getpass.getuser() + "/Fang_Extensions/" + x)
+
+		print("Preparing File...")
+		time.sleep(0.3)
+		APP = False
+		AUTO = False
+		FEXT = False
+		if software_contents.strip().split()[0] == "APP":
+			software_contents = software_contents[4:]
+			APP = True
+
+		if software_contents.strip().split()[0] == "AUTOMATION":
+			software_contents = software_contents[11:]
+			AUTO = True
+
+		if software_contents.strip().split()[0] == "EXTENSION":
+			software_contents = software_contents[9:]
+			FEXT = True
+
+		print("Installing {}...".format(wanted_app))
+		if APP:
+			opened = open("/Users/" + getpass.getuser() + "/Fang_Apps/" + ("{}.py".format(wanted_app)), "w")
+			opened.write(software_contents)
+			opened.close()
+			print("Installed {}.py,\nDownload contains {} bytes".format(wanted_app, len(software_contents)))
+
+
+		if AUTO:
+			opened = open("/Users/" + getpass.getuser() + "/Fang_Automations/" + ("{}.fen".format(wanted_app)), "w")
+			opened.write(software_contents)
+			opened.close()
+			print("Installed {}.fen,\nDownload contains {} bytes".format(wanted_app, len(software_contents)))
+
+
+		if FEXT:
+			opened = open("/Users/" + getpass.getuser() + "/Fang_Extensions/" + ("{}.fext".format(wanted_app)), "w")
+			opened.write(software_contents)
+			opened.close()
+			print("Installed {}.fext,\nDownload contains {} bytes".format(wanted_app, len(software_contents)))
+			print("The Command to use it is '{}'".format(software_contents.strip().split()[0][3:len(software_contents.strip().split()[0])-3]))
+
+
+		if not(FEXT) and not(AUTO) and not(APP):
+			print("Error Installing software")
+					
+	except:
+		print("There was an error while trying to install the software")
+		time.sleep(2)
+	time.sleep(1)
+
+
+if len(sys.argv) > 1:
+	if sys.argv[1] == "ext":
+		os.system("clear")
+		print()
+		print("Create Extension Shortcut")
+		print("-------------------------")
+		get_in = input("Which App would you like to make an extension shortcut?\n> ").strip()
+		app_found = False
+		for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Apps"):
+			if x[:len(x)-3] == get_in:
+				print("Found Application {}. \nWhat shortcut would you like to use?".format(get_in))
+				app_found = True
+				shortcut = input("> ").strip()
+				file_name = x[:len(x)-3]
+		if not(app_found):
+			print('App could not be found')
+			time.sleep(2)
+			quit()
+
+		for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Extensions"):
+			if x[:len(x)-5] == shortcut:
+				os.remove("/Users/" + getpass.getuser() + "/Fang_Extensions/" + x)
+				print("Removing old shortcuts...")
+				
+		print("Creating Shortcut...")
+		shortcut = shortcut.replace(" ", "_")
+		opened = open("/Users/" + getpass.getuser() + "/Fang_Extensions/" + file_name + ".fext", "w")
+		opened.write("'''{}'''\nimport os\nos.system('python3 {}')\n#SHORTCUT".format(shortcut, "/Users/" + getpass.getuser() + "/Fang_Apps/" + get_in + ".py"))
+		opened.close()
+		print("Created shortcut '{}' for app '{}'".format(shortcut, get_in))
+		print("Please use the 'reinit' command for the changes to take effect")
+
+	elif sys.argv[1] == "del_ext":
+		os.system("clear")
+		print()
+		print("Delete Extension Shortcut")
+		print("-------------------------")
+		shorts_list = []
+		shorts_list_PATH = []
+		for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Extensions"):
+			if x[len(x)-4:] == "fext":
+				opened = open("/Users/" + getpass.getuser() + "/Fang_Extensions/" + x)
+				text = opened.read().strip().split()
+				if text[len(text)-1] == "#SHORTCUT":
+					shorts_list.append(x)
+					shorts_list_PATH.append("/Users/" + getpass.getuser() + "/Fang_Extensions/" + x)
+				opened.close()
+		for x in shorts_list:
+			print("- " + x)
+		if len(shorts_list) == 0:
+			print("Looks like you don't have any shortcuts,\nuse the command 'pyapp ext' to make one!")
+			quit()
+		get_in = input('Which Shortcut Would you like to delete?\n> ').strip()
+		short_exists = False
+		for x in shorts_list:
+			if x == get_in:
+				print("Found.")
+				short_exists = True
+				os.remove(shorts_list_PATH[shorts_list.index(get_in)])
+				print("Deleted.")
+		if not(short_exists):
+			print("There are no shortcuts with that name")
+			quit()
+	
+		print("Please use the 'reinit' command for the changes to take effect")
+
+
+	elif sys.argv[1] == "install" and len(sys.argv) > 2:
+		try:
+			import requests
+		except Exception:
+			print("There was an error while trying to use online tools, \nplease make sure they are installed")
+			time.sleep(3)
+			quit()
+		wanted_app = sys.argv[2]
+		available_o = requests.get("http://raw.githubusercontent.com/PYAPP-REPOSITORY/PYAPP/master/RAW_AVAILABLE_SOFTWARE")
+		available = available_o.text
+		available = available.strip().split("\n")
+		wanted_app_available = False
+		for x in available:
+			if wanted_app == x:
+				wanted_app_available = True
+		if not(wanted_app_available):
+			print("There are no available apps under that name.")
+			time.sleep(1)
+			quit()
+		try:
+			print("Gathering {}...".format(wanted_app))
+			software_contents_o = requests.get("http://raw.githubusercontent.com/PYAPP-REPOSITORY/PYAPP/master/{}".format(wanted_app))
+			software_contents = software_contents_o.text
+			time.sleep(0.3)
+			print("Preparing location...")
+			time.sleep(0.3)
+			if software_contents.strip().split()[0] == "APP":
+				for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Apps"):
+					if x == wanted_app + ".py":
+						print("Removing Old Version...")
+						os.remove("/Users/" + getpass.getuser() + "/Fang_Apps/" + x)
+
+			if software_contents.strip().split()[0] == "AUTOMATION":
+				for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Automations"):
+					if x == wanted_app + ".fen":
+						print("Removing Old Version...")
+						os.remove("/Users/" + getpass.getuser() + "/Fang_Automations/" + x)
+
+			if software_contents.strip().split()[0] == "EXTENSION":
+				for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Extensions"):
+					if x == wanted_app + ".fext":
+						print("Removing Old Version...")
+						os.remove("/Users/" + getpass.getuser() + "/Fang_Extensions/" + x)
+
+			print("Preparing File...")
+			time.sleep(0.3)
+			APP = False
+			AUTO = False
+			FEXT = False
+			if software_contents.strip().split()[0] == "APP":
+				software_contents = software_contents[4:]
+				APP = True
+
+			if software_contents.strip().split()[0] == "AUTOMATION":
+				software_contents = software_contents[11:]
+				AUTO = True
+
+			if software_contents.strip().split()[0] == "EXTENSION":
+				software_contents = software_contents[9:]
+				FEXT = True
+
+			print("Installing {}...".format(wanted_app))
+			if APP:
+				opened = open("/Users/" + getpass.getuser() + "/Fang_Apps/" + ("{}.py".format(wanted_app)), "w")
+				opened.write(software_contents)
+				opened.close()
+				print("Installed {}.py,\nDownload contains {} bytes".format(wanted_app, len(software_contents)))
+
+
+			if AUTO:
+				opened = open("/Users/" + getpass.getuser() + "/Fang_Automations/" + ("{}.fen".format(wanted_app)), "w")
+				opened.write(software_contents)
+				opened.close()
+				print("Installed {}.fen,\nDownload contains {} bytes".format(wanted_app, len(software_contents)))
+
+
+			if FEXT:
+				opened = open("/Users/" + getpass.getuser() + "/Fang_Extensions/" + ("{}.fext".format(wanted_app)), "w")
+				opened.write(software_contents)
+				opened.close()
+				print("Installed {}.fext,\nDownload contains {} bytes".format(wanted_app, len(software_contents)))
+				print("The Command to use it is '{}'".format(software_contents.strip().split()[0][3:len(software_contents.strip().split()[0])-3]))
+
+
+			if not(FEXT) and not(AUTO) and not(APP):
+				print("Error Installing software")
+						
+		except:
+			print("There was an error while trying to install the software")
+			time.sleep(2)
+
+	elif sys.argv[1] == "del_soft":
+		os.system("clear")
+		print()
+		print("Delete Software")
+		print("---------------")
+		apps_list = []
+		apps_list_PATH = []
+		print("Searching for PYAPPS...")
+		for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Apps"):
+			if x[len(x)-2:] == "py":
+				opened = open("/Users/" + getpass.getuser() + "/Fang_Apps/" + x, "r")
+				text = opened.read().strip().split()
+				if text[len(text)-1] == "#PYAPP_APP":
+					apps_list.append(x)
+					apps_list_PATH.append("/Users/" + getpass.getuser() + "/Fang_Apps/" + x)
+				opened.close()
+
+		for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Extensions"):
+			if x[len(x)-4:] == "fext":
+				opened = open("/Users/" + getpass.getuser() + "/Fang_Extensions/" + x, "r")
+				text = opened.read().strip().split()
+				if text[len(text)-1] == "#PYAPP_APP":
+					apps_list.append(x)
+					apps_list_PATH.append("/Users/" + getpass.getuser() + "/Fang_Extensions/" + x)
+				opened.close()
+
+		for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Automations"):
+			if x[len(x)-3:] == "fen":
+				opened = open("/Users/" + getpass.getuser() + "/Fang_Automations/" + x, 'r')
+				text = opened.read().strip().split()
+				if text[len(text)-1] == "#PYAPP_APP":
+					apps_list.append(x)
+					apps_list_PATH.append("/Users/" + getpass.getuser() + "/Fang_Automations/" + x)
+				opened.close()
+
+		for x in apps_list:
+			print("- " + x)
+		if len(apps_list) == 0:
+			print("Looks like you don't have any pyapps,\nuse the command 'pyapp' to get some!")
+			quit()
+		get_in = input("Which Software would you like to delete? \n> ").strip()
+		app_found = False
+		for x in apps_list:
+			if x == get_in:
+				app_found = True
+				path = apps_list_PATH[apps_list.index(get_in)]
+				print("App Found...")
+
+
+		if not(app_found):
+			print("Could not find the specified app")
+			time.sleep(2)
+			quit()
+
+		os.remove(path)
+		print("Deleted.")
+
+
+	else:
+		print("Invalid Sub Use")
+		print(sys.argv)
+#PYAPP_APP
