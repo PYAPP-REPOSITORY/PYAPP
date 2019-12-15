@@ -1,0 +1,11 @@
+EXTENSION
+'''show_contents'''
+import sys
+import os
+if len(sys.argv) == 2:
+    try:
+        print(os.listdir(sys.argv[1]))
+    except Exception:
+        print("Error while finding directory")
+else:
+    print("Non-sufficient arguments")
