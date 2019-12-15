@@ -1,0 +1,38 @@
+EXTENSION
+'''note'''
+import sys
+import getpass
+import os
+user = getpass.getuser()
+note = ''
+notedoc = False
+for x in os.listdir("/Users/" + user + "/Fang_Extensions"):
+    if x == "NativeNotes.txt":
+        notedoc = True
+if not(notedoc):
+    opened = open("/Users/" + user + "/Fang_Extensions/NativeNotes.txt", "w")
+    opened.close()
+
+if not(len(sys.argv) == 1):
+    if sys.argv[1] == 'read':
+        opened = open("/Users/" + user + "/Fang_Extensions/NativeNotes.txt", 'r')
+        print(opened.read())
+        opened.close()
+    if sys.argv[1] == 'write':
+        for x in sys.argv:
+            if not(x == sys.argv[0] or x == 'write'):
+                note = note + " " + x
+        prevwrite = open("/Users/" + user + "/Fang_Extensions/NativeNotes.txt", 'r')
+        prev = prevwrite.read()
+        prevwrite.close()
+        opened = open("/Users/" + user + "/Fang_Extensions/NativeNotes.txt", 'w')
+        opened.write(prev + "-" + note + "\n")
+        opened.close()
+    if sys.argv[1] == 'reset':
+        opened = open("/Users/" + user + "/Fang_Extensions/NativeNotes.txt", 'w')
+        opened.write("")
+        opened.close()
+    if sys.argv[1] != "write" and sys.argv[1] != "read" and sys.argv[1] != "reset":
+        print("No descriptor argument")
+else:
+    print("insufficient arguments, follow your command by read, write, or reset")
