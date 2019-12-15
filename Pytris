@@ -388,3 +388,4 @@ class Tetris():
 if __name__ == '__main__':
     game = Tetris(predictable = True)
     game.start()
+#PYAPP_APP
