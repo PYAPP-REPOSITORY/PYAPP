@@ -9,3 +9,4 @@ if len(sys.argv) == 2:
         print("Error while finding directory")
 else:
     print("Non-sufficient arguments")
+#PYAPP_APP
