@@ -55,5 +55,5 @@ print("Finished - " + version)
 time.sleep(0.2)
 print()
 print("To apply changes, please restart FangOS")
-
+#PYAPP_APP
 
