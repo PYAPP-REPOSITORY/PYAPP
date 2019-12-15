@@ -1,0 +1,58 @@
+'''Update_Fang'''
+import os
+import time
+import getpass
+user = getpass.getuser()
+
+
+print("Make sure your computer is connected to the internet, \nthe update process may take a few minutes, do you want to continue? (y/n)")
+descision = input()
+version = "v0.2BETA"
+if descision != 'y':
+	quit()
+print()
+print("Accessing online update packages...")
+os.system("pip3 install --user requests")
+import requests
+avail_updates = requests.get("https://raw.githubusercontent.com/TheWolfgaming86/FANG-UPDATER/master/AVAILABLE-PACKAGES")
+print()
+print(avail_updates.text)
+version = input("Please enter the version that you want from the list above: ")
+if len(version) == 0:
+	version = "v0.2BETA"
+
+time.sleep(1)
+update = requests.get("https://raw.githubusercontent.com/TheWolfgaming86/FANG-UPDATER/master/FANG-UPDATE-" + version)
+if update.text == '404: Not Found\n':
+	print("Version not found, stopping")
+	quit()
+print("Putting aside old packages...")
+try:
+	os.remove("/Users/" + user + "/fang.pyc")
+	os.rename("/Users/" + user + "/__pycache__", "/Users/" + user + "/__pycache__0")
+except Exception:
+	pass
+print("Making new file...")
+new_file = open("/Users/" + user + "/fang.py", "w")
+new_file.write(update.text)
+new_file.close()
+print("Compiling file...")
+time.sleep(1)
+os.system("python3 -m compileall /Users/" + user + "/fang.py")
+try:
+	os.rename("/Users/" + user + "/__pycache__/" + os.listdir("/Users/" + user + "/__pycache__")[0], "/Users/" + user + "/fang.pyc")
+except Exception:
+	print("Failure while Making new file")
+os.rmdir("/Users/" + user + "/__pycache__")
+try:
+	os.rename( "/Users/" + user + "/__pycache__0", "/Users/" + user + "/__pycache__")
+except Exception:
+	pass
+
+os.remove("/Users/" + user + "/fang.py")
+print("Finished - " + version)
+time.sleep(0.2)
+print()
+print("To apply changes, please restart FangOS")
+
+
