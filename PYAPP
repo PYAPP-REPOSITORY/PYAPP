@@ -1,5 +1,4 @@
 EXTENSION
-
 '''pyapp'''
 #Deletable Shortcuts
 import sys
@@ -16,10 +15,13 @@ if len(sys.argv) == 1:
 		quit()
 	
 	VERSION = "0.0.2"
-
-	available_o = requests.get("http://raw.githubusercontent.com/PYAPP-REPOSITORY/PYAPP/master/AVAILABLE_SOFTWARE")
-	available = available_o.text
-	available = available.strip().split("\n")
+	try:
+		available_o = requests.get("http://raw.githubusercontent.com/PYAPP-REPOSITORY/PYAPP/master/AVAILABLE_SOFTWARE")
+		available = available_o.text
+		available = available.strip().split("\n")
+	except Exception:
+		print("Looks like there was an error while connecting to the repositories,\nplease check your internet connection")
+		quit()
 	if VERSION != available[0]:
 		print("Looks like the version you are using is out of date, \nto continue, please update PYAPP")
 		time.sleep(3)
@@ -125,10 +127,13 @@ if len(sys.argv) > 1:
 		print()
 		print("Create Extension Shortcut")
 		print("-------------------------")
+		for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Apps"):
+			if x[len(x)-2:] == "py":
+				print("- " + x)
 		get_in = input("Which App would you like to make an extension shortcut?\n> ").strip()
 		app_found = False
 		for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Apps"):
-			if x[:len(x)-3] == get_in:
+			if x == get_in:
 				print("Found Application {}. \nWhat shortcut would you like to use?".format(get_in))
 				app_found = True
 				shortcut = input("> ").strip()
@@ -146,7 +151,7 @@ if len(sys.argv) > 1:
 		print("Creating Shortcut...")
 		shortcut = shortcut.replace(" ", "_")
 		opened = open("/Users/" + getpass.getuser() + "/Fang_Extensions/" + file_name + ".fext", "w")
-		opened.write("'''{}'''\nimport os\nos.system('python3 {}')\n#SHORTCUT".format(shortcut, "/Users/" + getpass.getuser() + "/Fang_Apps/" + get_in + ".py"))
+		opened.write("'''{}'''\nimport os\nos.system('python3 {}')\n#SHORTCUT".format(shortcut, "/Users/" + getpass.getuser() + "/Fang_Apps/" + get_in))
 		opened.close()
 		print("Created shortcut '{}' for app '{}'".format(shortcut, get_in))
 		print("Please use the 'reinit' command for the changes to take effect")
@@ -194,9 +199,13 @@ if len(sys.argv) > 1:
 			time.sleep(3)
 			quit()
 		wanted_app = sys.argv[2]
-		available_o = requests.get("http://raw.githubusercontent.com/PYAPP-REPOSITORY/PYAPP/master/RAW_AVAILABLE_SOFTWARE")
-		available = available_o.text
-		available = available.strip().split("\n")
+		try:
+			available_o = requests.get("http://raw.githubusercontent.com/PYAPP-REPOSITORY/PYAPP/master/RAW_AVAILABLE_SOFTWARE")
+			available = available_o.text
+			available = available.strip().split("\n")
+		except Exception:
+			print("Looks like there was an error while connecting to the repositories,\nplease check your internet connection")
+			quit()
 		wanted_app_available = False
 		for x in available:
 			if wanted_app == x:
@@ -335,7 +344,65 @@ if len(sys.argv) > 1:
 		print("Deleted.")
 
 
+
+
+	elif sys.argv[1] == "list_soft":
+		apps_list = []
+		apps_list_PATH = []
+		print()
+		print("Searching for PYAPPS...")
+		for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Apps"):
+			if x[len(x)-2:] == "py":
+				opened = open("/Users/" + getpass.getuser() + "/Fang_Apps/" + x, "r")
+				text = opened.read().strip().split()
+				if text[len(text)-1] == "#PYAPP_APP":
+					apps_list.append(x)
+					apps_list_PATH.append("/Users/" + getpass.getuser() + "/Fang_Apps/" + x)
+				opened.close()
+
+		for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Extensions"):
+			if x[len(x)-4:] == "fext":
+				opened = open("/Users/" + getpass.getuser() + "/Fang_Extensions/" + x, "r")
+				text = opened.read().strip().split()
+				if text[len(text)-1] == "#PYAPP_APP":
+					apps_list.append(x)
+					apps_list_PATH.append("/Users/" + getpass.getuser() + "/Fang_Extensions/" + x)
+				opened.close()
+
+		for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Automations"):
+			if x[len(x)-3:] == "fen":
+				opened = open("/Users/" + getpass.getuser() + "/Fang_Automations/" + x, 'r')
+				text = opened.read().strip().split()
+				if text[len(text)-1] == "#PYAPP_APP":
+					apps_list.append(x)
+					apps_list_PATH.append("/Users/" + getpass.getuser() + "/Fang_Automations/" + x)
+				opened.close()
+		for x in apps_list:
+			print("- " + x)
+		if len(apps_list) == 0:
+			print("Looks like you don't have any pyapps,\nuse the command 'pyapp' to get some!")
+			quit()
+
+	elif sys.argv[1] == "list_ext":
+		print()
+		print("Searching for shortcuts...")
+		shorts_list = []
+		shorts_list_PATH = []
+		for x in os.listdir("/Users/" + getpass.getuser() + "/Fang_Extensions"):
+			if x[len(x)-4:] == "fext":
+				opened = open("/Users/" + getpass.getuser() + "/Fang_Extensions/" + x)
+				text = opened.read().strip().split()
+				if text[len(text)-1] == "#SHORTCUT":
+					shorts_list.append(x)
+					shorts_list_PATH.append("/Users/" + getpass.getuser() + "/Fang_Extensions/" + x)
+				opened.close()
+		for x in shorts_list:
+			print("- " + x)
+		if len(shorts_list) == 0:
+			print("Looks like you don't have any shortcuts,\nuse the command 'pyapp ext' to make one!")
+			quit()
+
+
 	else:
 		print("Invalid Sub Use")
-		print(sys.argv)
 #PYAPP_APP
