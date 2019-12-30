@@ -1,0 +1,259 @@
+EXTENSION
+'''desklink'''
+'''Version v0.0.1 FangOS Edition'''
+import os
+import sys
+import time
+DeskLinkMain = 
+'''
+import webbrowser
+from tkinter import *
+import time
+import StoreModule
+import ErrorMessage
+import Delete
+import CreateNew
+from functools import partial
+shortcuts = []
+buttons = []
+MainWin = None
+def window_create():
+	global MainWin
+	
+	MainWin = Tk()
+	MainWin.title("DeskLink")
+	MainWin.configure(bg="Green")
+	MainWin.geometry("500x500")
+	TopText = Label(MainWin, text="DeskLink Shortcuts", fg="Black", bg="Green")
+	TopText.config(font=("Courier", 24))
+	TopText.pack()
+	MainWin.update()
+
+	QuitButton = Button(MainWin, text='Quit', bg="Black", fg="White", command=quit)
+	QuitButton.pack(side=BOTTOM)
+	update_b = Button(MainWin, text="Update List", bg="Black", fg="White", command=tasks)
+	update_b.pack(side=BOTTOM)
+	delete_short_b = Button(MainWin, text="Delete Desklink Shortcut", bg="Black", fg="White", command=Delete.delete)
+	delete_short_b.pack(side=BOTTOM)
+	create_new_b = Button(MainWin, text="Create Desklink Shortcut", bg="Black", fg="White", command=CreateNew.create_new)
+	create_new_b.pack(side=BOTTOM)
+
+def tasks():
+
+	global shortcuts
+	global buttons
+	StoreModule.initialize()
+	if shortcuts != StoreModule.get_current_shortcuts():
+		MainWin.destroy()
+		window_create()
+		shortcuts = StoreModule.get_current_shortcuts()
+		buttons = []
+		for x in range(len(shortcuts)):
+			buttons.append(shortcuts[x-1])
+			
+			buttons[x-1] = Button(MainWin, text=shortcuts[x-1][0], command=partial(webbrowser.open_new_tab, shortcuts[x-1][1]))
+			buttons[x-1].pack()
+		
+
+	MainWin.update()
+
+
+window_create()
+tasks()
+
+
+
+
+
+MainWin.mainloop()
+'''
+
+Delete = 
+'''
+from tkinter import *
+import StoreModule
+import ErrorMessage
+from functools import partial
+
+
+class delete():
+	def __init__(self):
+		self.delete_win = Tk()
+		self.delete_win.title("DeskLink")
+		self.delete_win.configure(bg="Green")
+		TopText = Label(self.delete_win, text="Delete DeskLink Shortcuts", fg="Black", bg="Green")
+		TopText.config(font=("Courier", 12))
+		TopText.pack()
+		CancelButton = Button(self.delete_win, text="Cancel", fg='White', bg = 'Black', borderwidth = 0, command = self.cancel)
+		CancelButton.pack(side=BOTTOM)
+		DeleteButton = Button(self.delete_win, text="Delete Selected", fg='White', bg = 'Black', borderwidth = 0, command = self.delete_it)
+		DeleteButton.pack(side=BOTTOM)
+		
+
+		StoreModule.initialize()
+		self.buttons = []
+		self.vars = []
+		self.Shortcuts = StoreModule.get_current_shortcuts()
+		for x in range(len(StoreModule.get_current_shortcuts())):
+
+			self.vars.append(IntVar(self.delete_win))
+			self.buttons.append(Checkbutton(self.delete_win, text=self.Shortcuts[x-1][0]+" - "+self.Shortcuts[x-1][1], fg="Black", bg="Green", variable=self.vars[x]))
+			self.buttons[x].config(font=("Courier", 8))
+			self.buttons[x].pack()
+
+		self.delete_win.update()
+
+	def cancel(self):
+		self.delete_win.destroy()
+
+	def delete_it(self):
+		for x in range(len(self.vars)):
+			if self.vars[x].get() == 1:
+				StoreModule.delete_shortcut(self.Shortcuts[x-1][0])
+		
+		self.cancel()
+
+'''
+CreateNew = 
+'''
+from tkinter import *
+import StoreModule
+import ErrorMessage
+
+class create_new():
+	def __init__(self):
+		self.create_win = Tk()
+		self.create_win.title("DeskLink")
+		self.create_win.configure(bg="Green")
+		TopText = Label(self.create_win, text="Create DeskLink Shortcut", fg="Black", bg="Green")
+		TopText.config(font=("Courier", 12))
+		TopText.pack()
+		right_frame = Frame(self.create_win)
+		right_frame.pack(side=RIGHT)
+		left_frame = Frame(self.create_win)
+		left_frame.pack(side=LEFT)
+		Address_Label = Label(left_frame, text="Address:", fg="Black", bg="Green", width=12)
+		Address_Label.config(font=("Courier", 9))
+		Address_Label.pack()
+		Name_Label = Label(left_frame, text="Name:", fg="Black", bg="Green", width=12)
+		Name_Label.config(font=("Courier", 9))
+		Name_Label.pack()
+		self.Address_Entry = Entry(right_frame)
+		self.Address_Entry.pack()
+		self.Name_Entry = Entry(right_frame)
+		self.Name_Entry.pack()
+		
+		self.httpsState = IntVar(self.create_win)
+		httpsCheck = Checkbutton(self.create_win, text="Use HTTPS", fg="Black", bg="Green", variable=self.httpsState, width=9)
+		httpsCheck.select()
+		httpsCheck.pack()
+		Save_B = Button(right_frame, text="Save", bg="Black", fg="White", highlightbackground="green", borderwidth = 0, width = 17, command=self.Make_it)
+		Save_B.pack(side=BOTTOM)
+		cancel_B = Button(left_frame, text="Cancel", bg="Black", fg="White", command=self.cancel, width=12, borderwidth = 0)
+		cancel_B.pack(side=BOTTOM)
+
+		self.create_win.update()
+
+	def cancel(self):
+		self.create_win.destroy()
+
+	def Make_it(self):
+		header = "http://www."
+		if self.httpsState.get() == 1:
+			header = "https://www."
+		result = StoreModule.make_shortcut(self.Name_Entry.get(), ((header) + self.Address_Entry.get().replace(" ", '').replace("http://www.", "").replace("https://www.", "")).strip())
+		if result == "Error":
+			ErrorMessage.error("Error", "That Shortcut name is already in use")
+		else:
+			self.cancel()
+'''
+StoreModule = 
+'''
+import os
+import sys
+
+
+shortcuts = []
+
+path = sys.path[0] + "/Shortcuts"
+shorts_exists = False
+
+
+for x in os.listdir(sys.path[0]):
+	if x == "Shortcuts":
+		shorts_exists = True
+if not(shorts_exists):
+	os.mkdir(sys.path[0]+"/Shortcuts")
+
+def initialize():
+	global shortcuts
+	shortcuts = []
+
+	for x in os.listdir(path):
+		opened = open(path+'/'+x, "r")
+		info = opened.read().strip().split("\n")
+		shortcuts.append(info)
+		opened.close()
+	return shortcuts
+
+def make_shortcut(Name, address):
+	for x in os.listdir(path):
+		if x == Name + ".shrt":
+			return "Error"
+	shortcuts.append([Name, address])
+	opened = open(path+'/' + Name + '.shrt', "w")
+	opened.write(Name+'\n'+address)
+
+def get_current_shortcuts():
+	return shortcuts
+
+def delete_shortcut(Name):
+	for x in os.listdir(path):
+		if x == Name + ".shrt":
+			os.remove(path+"/"+Name+".shrt")
+'''
+ErrorMessage = 
+'''
+class error():
+	def __init__(self, Name, Message):
+		self.error_win = Tk()
+		self.error_win.title(Name)
+		self.error_win.geometry("250x100")
+		self.Error_mes = Label(self.error_win, text=Message)
+		self.Error_mes.pack()
+		self.okayButton = Button(self.error_win, text="Okay", command=self.okay, pady=5, width= 20)
+		self.okayButton.pack(side=BOTTOM)
+
+	def okay(self):
+		self.error_win.destroy()
+'''
+print("Loading DeskLink FangOS Edition...")
+time.sleep(0.2)
+ResourceFolderExists = False
+for x in os.listdir(sys.path[0]):
+	if x == "DeskLinkResources":
+		ResourceFolderExists = True
+if not(ResourceFolderExists):
+	print("Generating Resources...")
+	os.mkdir(sys.path[0]+"/DeskLinkResources")
+	time.sleep(0.5)
+	print("Finishing Installation...")
+	opened = open(sys.path[0]+"/DeskLinkResources/DeskLinkMain.py", 'w')
+	opened.write(DeskLinkMain)
+	opened.close()
+	opened = open(sys.path[0]+"/DeskLinkResources/Delete.py", 'w')
+	opened.write(Delete)
+	opened.close()
+	opened = open(sys.path[0]+"/DeskLinkResources/CreateNew.py", 'w')
+	opened.write(CreateNew)
+	opened.close()
+	opened = open(sys.path[0]+"/DeskLinkResources/StoreModule.py", 'w')
+	opened.write(StoreModule)
+	opened.close()
+	opened = open(sys.path[0]+"/DeskLinkResources/ErrorMessage.py", 'w')
+	opened.write(ErrorMessage)
+	opened.close()
+	time.sleep(2)
+	print("Finished. Starting...")
+os.system("python3 "+ sys.path[0] + "/DeskLinkResources/DeskLinkMain.py")
+#PYAPP_APP
