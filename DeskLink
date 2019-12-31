@@ -28,13 +28,13 @@ def window_create():
 	TopText.pack()
 	MainWin.update()
 
-	QuitButton = Button(MainWin, text='Quit', bg="Black", fg="White", command=quit)
+	QuitButton = Button(MainWin, text='Quit', bg="Black", fg="Black", command=quit)
 	QuitButton.pack(side=BOTTOM)
-	update_b = Button(MainWin, text="Update List", bg="Black", fg="White", command=tasks)
+	update_b = Button(MainWin, text="Update List", bg="Black", fg="Black", command=tasks)
 	update_b.pack(side=BOTTOM)
-	delete_short_b = Button(MainWin, text="Delete Desklink Shortcut", bg="Black", fg="White", command=Delete.delete)
+	delete_short_b = Button(MainWin, text="Delete Desklink Shortcut", bg="Black", fg="Black", command=Delete.delete)
 	delete_short_b.pack(side=BOTTOM)
-	create_new_b = Button(MainWin, text="Create Desklink Shortcut", bg="Black", fg="White", command=CreateNew.create_new)
+	create_new_b = Button(MainWin, text="Create Desklink Shortcut", bg="Black", fg="Black", command=CreateNew.create_new)
 	create_new_b.pack(side=BOTTOM)
 
 def tasks():
@@ -82,9 +82,9 @@ class delete():
 		TopText = Label(self.delete_win, text="Delete DeskLink Shortcuts", fg="Black", bg="Green")
 		TopText.config(font=("Courier", 12))
 		TopText.pack()
-		CancelButton = Button(self.delete_win, text="Cancel", fg='White', bg = 'Black', borderwidth = 0, command = self.cancel)
+		CancelButton = Button(self.delete_win, text="Cancel", fg='Black', bg = 'Black', borderwidth = 0, command = self.cancel)
 		CancelButton.pack(side=BOTTOM)
-		DeleteButton = Button(self.delete_win, text="Delete Selected", fg='White', bg = 'Black', borderwidth = 0, command = self.delete_it)
+		DeleteButton = Button(self.delete_win, text="Delete Selected", fg='Black', bg = 'Black', borderwidth = 0, command = self.delete_it)
 		DeleteButton.pack(side=BOTTOM)
 		
 
@@ -144,9 +144,9 @@ class create_new():
 		httpsCheck = Checkbutton(self.create_win, text="Use HTTPS", fg="Black", bg="Green", variable=self.httpsState, width=9)
 		httpsCheck.select()
 		httpsCheck.pack()
-		Save_B = Button(right_frame, text="Save", bg="Black", fg="White", highlightbackground="green", borderwidth = 0, width = 17, command=self.Make_it)
+		Save_B = Button(right_frame, text="Save", bg="Black", fg="Black", highlightbackground="green", borderwidth = 0, width = 17, command=self.Make_it)
 		Save_B.pack(side=BOTTOM)
-		cancel_B = Button(left_frame, text="Cancel", bg="Black", fg="White", command=self.cancel, width=12, borderwidth = 0)
+		cancel_B = Button(left_frame, text="Cancel", bg="Black", fg="Black", command=self.cancel, width=12, borderwidth = 0)
 		cancel_B.pack(side=BOTTOM)
 
 		self.create_win.update()
