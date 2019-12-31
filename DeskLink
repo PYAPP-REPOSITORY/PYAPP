@@ -187,7 +187,7 @@ def initialize():
 
 	for x in os.listdir(path):
 		opened = open(path+'/'+x, "r")
-		info = opened.read().strip().split("\n")
+		info = opened.read().strip().split("\\n")
 		shortcuts.append(info)
 		opened.close()
 	return shortcuts
@@ -198,7 +198,7 @@ def make_shortcut(Name, address):
 			return "Error"
 	shortcuts.append([Name, address])
 	opened = open(path+'/' + Name + '.shrt', "w")
-	opened.write(Name+'\n'+address)
+	opened.write(Name+'\\n'+address)
 
 def get_current_shortcuts():
 	return shortcuts
@@ -226,11 +226,11 @@ print("Loading DeskLink FangOS Edition...")
 time.sleep(0.2)
 ResourceFolderExists = False
 for x in os.listdir(sys.path[0]):
-	if x == "DeskLinkResources":
+	if x == "DeskLinkResourcesV0.0.1":
 		ResourceFolderExists = True
 if not(ResourceFolderExists):
 	print("Generating Resources...")
-	os.mkdir(sys.path[0]+"/DeskLinkResources")
+	os.mkdir(sys.path[0]+"/DeskLinkResourcesV0.0.1")
 	time.sleep(0.5)
 	print("Finishing Installation...")
 	opened = open(sys.path[0]+"/DeskLinkResources/DeskLinkMain.py", 'w')
