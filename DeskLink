@@ -4,8 +4,7 @@ EXTENSION
 import os
 import sys
 import time
-DeskLinkMain = 
-'''
+DeskLinkMain = '''
 import webbrowser
 from tkinter import *
 import time
@@ -68,8 +67,7 @@ tasks()
 MainWin.mainloop()
 '''
 
-Delete = 
-'''
+Delete = '''
 from tkinter import *
 import StoreModule
 import ErrorMessage
@@ -114,8 +112,7 @@ class delete():
 		self.cancel()
 
 '''
-CreateNew = 
-'''
+CreateNew = '''
 from tkinter import *
 import StoreModule
 import ErrorMessage
@@ -167,8 +164,7 @@ class create_new():
 		else:
 			self.cancel()
 '''
-StoreModule = 
-'''
+StoreModule = '''
 import os
 import sys
 
@@ -212,8 +208,7 @@ def delete_shortcut(Name):
 		if x == Name + ".shrt":
 			os.remove(path+"/"+Name+".shrt")
 '''
-ErrorMessage = 
-'''
+ErrorMessage = '''
 class error():
 	def __init__(self, Name, Message):
 		self.error_win = Tk()
