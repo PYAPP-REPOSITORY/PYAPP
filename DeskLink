@@ -209,6 +209,7 @@ def delete_shortcut(Name):
 			os.remove(path+"/"+Name+".shrt")
 '''
 ErrorMessage = '''
+from tkinter import *
 class error():
 	def __init__(self, Name, Message):
 		self.error_win = Tk()
