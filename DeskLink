@@ -250,5 +250,5 @@ if not(ResourceFolderExists):
 	opened.close()
 	time.sleep(2)
 	print("Finished. Starting...")
-os.system("python3 "+ sys.path[0] + "/DeskLinkResources/DeskLinkMain.py")
+os.system("python3 "+ sys.path[0] + "/DeskLinkResourcesV0.0.1/DeskLinkMain.py")
 #PYAPP_APP
